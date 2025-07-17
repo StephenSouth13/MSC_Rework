@@ -1,368 +1,501 @@
-// app/page.tsx
-"use client"; // Đánh dấu đây là Client Component vì có nhiều tương tác
+"use client";
 
-import styles from '/Home.module.css';
-import React, { useState, useEffect, useRef } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import Script from 'next/script';
-import type { Metadata } from 'next';
-
-// Metadata không hoạt động trong Client Component, bạn phải đặt nó trong layout.tsx
-// hoặc trong một Server Component cha. Tuy nhiên, để tiện cho việc chuyển đổi,
-// tôi sẽ comment nó ở đây để bạn biết các thẻ meta được chuyển đổi như thế nào.
-/*
-export const metadata: Metadata = {
-  // Kết hợp các thẻ description và keywords
-  description: "MSC - Trung tâm Mentoring kết hợp Coaching đầu tiên ở Việt Nam. Giúp cho học viên và dự án phát triển bền vững, với đội ngũ tư vấn, thiết kế và huấn luyện chuyên nghiệp.",
-  keywords: "MSC, Trung tâm đào tạo kỹ năng, mentoring, coaching, người đi làm, phát triển dự án, nhân sự kế thừa",
-  authors: [{ name: "MSC Team" }],
-  robots: "index, follow",
-  
-  // Icons
-  icons: {
-    icon: [
-      { url: '/msc/assets/logo/favicon.ico', type: 'image/x-icon' },
-      { url: '/msc/assets/logo/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
-      { url: '/msc/assets/logo/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
-    ],
-    apple: '/msc/assets/logo/apple-touch-icon.png',
-    other: [
-        { rel: 'icon', sizes: '192x192', url: '/msc/assets/logo/android-chrome-192x192.png' },
-        { rel: 'icon', sizes: '512x512', url: '/msc/assets/logo/android-chrome-512x512.png' },
-    ]
-  },
-  
-  // Manifest
-  manifest: '/msc/assets/logo/site.webmanifest',
-  
-  // Canonical URL
-  alternates: {
-    canonical: 'https://msc.edu.vn/',
-  },
-
-  // Open Graph (Facebook, Zalo)
-  openGraph: {
-    title: "MSC - Đào tạo Kỹ năng cho Sinh viên và Người đi làm",
-    description: "Khám phá các khóa học kỹ năng mềm tại MSC, nơi đào tạo chuyên nghiệp cho sinh viên và người đi làm.",
-    url: "https://msc.edu.vn/",
-    images: 'https://msc.edu.vn/msc/assets/logo/logo.png',
-    type: 'website',
-  },
-
-  // Twitter Card
-  twitter: {
-    card: 'summary_large_image',
-    title: "MSC - Đào tạo Kỹ năng cho Sinh viên và Người đi làm",
-    description: "Khám phá các khóa học kỹ năng mềm tại MSC, nơi đào tạo chuyên nghiệp cho sinh viên và người đi làm.",
-    images: ['https://msc.edu.vn/msc/assets/logo/logo.png'],
-  },
-};
-*/
-
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import {
+  ArrowRight,
+  BookOpen,
+  Users,
+  FolderOpen,
+  Award,
+  Target,
+  Handshake,
+  Share2,
+  Mail,
+  Star,
+  Sparkles,
+  Github,
+  Twitter,
+  Instagram,
+  PlayCircle,
+  TrendingUp,
+  Globe,
+} from "lucide-react";
+import { Button } from "@/components/ui/Button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/Card";
+import Navigation from "@/components/Navigation";
+import FloatingChat from "@/components/FloatingChat";
 
 export default function HomePage() {
-    const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [showBackToTop, setShowBackToTop] = useState(false);
-    const mscWrapperRef = useRef<HTMLDivElement>(null);
-    const [activeNewsTab, setActiveNewsTab] = useState('share');
+  const [language, setLanguage] = useState<"vi" | "en">("vi");
 
-    // Logic cho nút Back to Top
-    useEffect(() => {
-        const handleScroll = () => {
-            if (window.scrollY > 300) {
-                setShowBackToTop(true);
-            } else {
-                setShowBackToTop(false);
-            }
-        };
+  useEffect(() => {
+    const savedLanguage = localStorage.getItem("language") as "vi" | "en";
+    if (savedLanguage) {
+      setLanguage(savedLanguage);
+    }
+  }, []);
 
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
-    
-    const scrollToTop = () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
+  useEffect(() => {
+    localStorage.setItem("language", language);
+  }, [language]);
 
-    // Logic cho MSCer carousel
-    const scrollMscCarousel = (direction: 'prev' | 'next') => {
-        if (mscWrapperRef.current) {
-            const wrapper = mscWrapperRef.current;
-            const itemWidth = wrapper.querySelector('.msc-item')?.clientWidth || 0;
-            const gap = 24; // Dựa trên CSS
-            const scrollAmount = itemWidth + gap;
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        duration: 0.6,
+        staggerChildren: 0.1,
+      },
+    },
+  };
 
-            if (direction === 'next') {
-                wrapper.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-            } else {
-                wrapper.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-            }
-        }
-    };
-  
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6 },
+    },
+  };
+
+  const navigationCards = [
+    {
+      title: language === "vi" ? "Giới thiệu" : "About Us",
+      description:
+        language === "vi"
+          ? "Tìm hiểu về MSC và hành trình phát triển"
+          : "Learn about MSC and our development journey",
+      icon: <Users className="w-8 h-8" />,
+      href: "/about",
+      color: "from-blue-500 to-cyan-500",
+      delay: 0,
+    },
+    {
+      title: language === "vi" ? "Đào tạo" : "Training",
+      description:
+        language === "vi"
+          ? "Khám phá các khóa học chất lượng cao"
+          : "Explore high-quality training courses",
+      icon: <BookOpen className="w-8 h-8" />,
+      href: "/training",
+      color: "from-purple-500 to-pink-500",
+      delay: 0.1,
+    },
+    {
+      title: language === "vi" ? "Dự án" : "Projects",
+      description:
+        language === "vi"
+          ? "Portfolio các dự án thành công"
+          : "Portfolio of successful projects",
+      icon: <FolderOpen className="w-8 h-8" />,
+      href: "/projects",
+      color: "from-green-500 to-emerald-500",
+      delay: 0.2,
+    },
+    {
+      title: "Mentors",
+      description:
+        language === "vi"
+          ? "Đội ngũ giảng viên chuyên gia"
+          : "Expert faculty team",
+      icon: <Target className="w-8 h-8" />,
+      href: "/mentors",
+      color: "from-yellow-500 to-orange-500",
+      delay: 0.3,
+    },
+    {
+      title: "MSCers",
+      description:
+        language === "vi"
+          ? "Cộng đồng học viên xuất sắc"
+          : "Outstanding student community",
+      icon: <Award className="w-8 h-8" />,
+      href: "/mscers",
+      color: "from-red-500 to-rose-500",
+      delay: 0.4,
+    },
+    {
+      title: language === "vi" ? "Đồng hành" : "Partnership",
+      description:
+        language === "vi"
+          ? "Đối tác và cơ hội hợp tác"
+          : "Partners and collaboration opportunities",
+      icon: <Handshake className="w-8 h-8" />,
+      href: "/partnership",
+      color: "from-indigo-500 to-purple-500",
+      delay: 0.5,
+    },
+    {
+      title: language === "vi" ? "Chia sẻ" : "Blog",
+      description:
+        language === "vi"
+          ? "Bài viết và kiến thức hữu ích"
+          : "Useful articles and knowledge",
+      icon: <Share2 className="w-8 h-8" />,
+      href: "/blog",
+      color: "from-teal-500 to-cyan-500",
+      delay: 0.6,
+    },
+    {
+      title: language === "vi" ? "Liên hệ" : "Contact",
+      description:
+        language === "vi"
+          ? "Kết nối và hỗ trợ trực tiếp"
+          : "Direct connection and support",
+      icon: <Mail className="w-8 h-8" />,
+      href: "/contact",
+      color: "from-pink-500 to-rose-500",
+      delay: 0.7,
+    },
+  ];
+
+  const stats = [
+    {
+      number: "500+",
+      label: language === "vi" ? "Học viên đã đào tạo" : "Students Trained",
+      icon: <Users className="w-6 h-6" />,
+    },
+    {
+      number: "15+",
+      label: language === "vi" ? "Dự án thành công" : "Successful Projects",
+      icon: <Target className="w-6 h-6" />,
+    },
+    {
+      number: "98%",
+      label: language === "vi" ? "Tỷ lệ hài lòng" : "Satisfaction Rate",
+      icon: <Star className="w-6 h-6" />,
+    },
+    {
+      number: "5+",
+      label: language === "vi" ? "Năm kinh nghiệm" : "Years Experience",
+      icon: <TrendingUp className="w-6 h-6" />,
+    },
+  ];
+
+  const floatingElements = Array.from({ length: 15 }, (_, i) => ({
+    id: i,
+    delay: Math.random() * 5,
+    x: Math.random() * 100,
+    y: Math.random() * 100,
+    size: Math.random() * 4 + 2,
+    duration: Math.random() * 3 + 4,
+  }));
+
   return (
-    <>
-      {/* Topbar */}
-      <div className="topbar">
-        <div className="topbar-right">
-          <div className="topbar-left">
-            <a className="lang-btn"><Image src="https://cdn-icons-png.flaticon.com/512/197/197473.png" alt="vi" width={24} height={24} /> </a>
-            <a className="lang-btn"><Image src="https://cdn-icons-png.flaticon.com/512/197/197374.png" alt="en" width={24} height={24} /> </a>
-          </div>
-          <div className="d-flex">
-            <Link href="/login" target="_blank"><button className="profile-btn">Đăng Nhập</button></Link>
-            <Link className="d-done" href="/register" target="_blank"><button className="profile-btn">Đăng Ký</button></Link>
-            <Link className="d-done" href="/profile" target="_blank"><button className="profile-btn">Hồ sơ năng lực</button></Link>
-          </div>
-        </div>
-      </div>
+    <div className="min-h-screen">
+      {/* Navigation */}
+      <Navigation language={language} setLanguage={setLanguage} />
 
-      {/* Header + Navbar */}
-      <header id="header">
-        <div className="logo">
-          <Link href="/"><Image src="/msc/assets/logo/LogoMSC.webp" alt="MSC Logo" width={150} height={50} priority /></Link>
-        </div>
-        <nav className="navbar">
-          <div className="mobile-nav-toggle" id="mobile-toggle" onClick={() => setMobileMenuOpen(true)}>
-            <i className="bi bi-list"></i>
-          </div>
-          <ul className="nav-menu">
-            <li><Link href="/trang-con/gioi-thieu">GIỚI THIỆU</Link></li>
-            <li><Link href="/trang-con/dao-tao">ĐÀO TẠO</Link></li>
-            <li><Link href="/trang-con/du-an">DỰ ÁN</Link></li>
-            <li><Link href="/trang-con/mentor">MENTORS</Link></li>
-            <li><Link href="/trang-con/mscer">MSCer</Link></li>
-            <li><Link href="/trang-con/dong-hanh">ĐỒNG HÀNH</Link></li>
-            <li><Link href="/trang-con/chia-se">CHIA SẺ</Link></li>
-            <li><Link href="/trang-con/lien-he">LIÊN HỆ</Link></li>
-          </ul>
-        </nav>
-        {isMobileMenuOpen && <div className="mobile-overlay" id="mobile-overlay" onClick={() => setMobileMenuOpen(false)}></div>}
-      </header>
+      {/* Floating Background Elements */}
+      {floatingElements.map((element) => (
+        <motion.div
+          key={element.id}
+          className="fixed opacity-20 pointer-events-none z-0"
+          style={{
+            left: `${element.x}%`,
+            top: `${element.y}%`,
+            width: `${element.size}px`,
+            height: `${element.size}px`,
+          }}
+          animate={{
+            y: [0, -20, 0],
+            rotate: [0, 360],
+            scale: [1, 1.2, 1],
+            opacity: [0.2, 0.5, 0.2],
+          }}
+          transition={{
+            duration: element.duration,
+            repeat: Infinity,
+            delay: element.delay,
+            ease: "easeInOut",
+          }}
+        >
+          {element.id % 3 === 0 ? (
+            <Star className="w-full h-full text-blue-400" fill="currentColor" />
+          ) : element.id % 3 === 1 ? (
+            <Sparkles
+              className="w-full h-full text-purple-400"
+              fill="currentColor"
+            />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-r from-pink-400 to-yellow-400 rounded-full" />
+          )}
+        </motion.div>
+      ))}
 
-      {/* Menu Mobile */}
-      <div className={`nav-mobile-menu ${isMobileMenuOpen ? 'active' : ''}`} id="nav-mobile-menu">
-        <div className="mobile-header">
-          <span>MENU</span>
-          <button id="mobile-close" onClick={() => setMobileMenuOpen(false)}><i className="bi bi-x-lg"></i></button>
-        </div>
-        <ul className="nav-mobile">
-            {/* ... lặp lại các link như trên */}
-        </ul>
-      </div>
+      {/* Hero Section */}
+      <section className="relative min-h-screen flex items-center justify-center px-4 pt-16">
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="text-center max-w-6xl mx-auto relative z-10"
+        >
+          {/* Logo/Brand */}
+          <motion.div variants={itemVariants} className="mb-8">
+            <motion.div
+              className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-3xl mb-8 shadow-2xl"
+              whileHover={{
+                scale: 1.05,
+                rotate: [0, -5, 5, 0],
+                boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+              }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Sparkles className="w-12 h-12 text-white" />
+            </motion.div>
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6">
+              <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                MSC
+              </span>
+              <br />
+              <span className="bg-gradient-to-r from-purple-600 via-pink-600 to-red-500 bg-clip-text text-transparent">
+                Center
+              </span>
+            </h1>
+          </motion.div>
 
-      {/* Floating Icons */}
-      <div className="floating-contact">
-        <a href="https://www.facebook.com/msc.edu.vn" className="contact-btn fb-btn" target="_blank" rel="noopener noreferrer">
-          <Image src="/msc/assets/logo/fb.png" alt="Facebook" width={40} height={40} />
-        </a>
-        <a href="https://zalo.me/g/acumou501" className="contact-btn zalo-btn" target="_blank" rel="noopener noreferrer">
-          <Image src="/msc/assets/logo/zalo.webp" alt="Zalo" width={40} height={40} />
-        </a>
-        {showBackToTop && (
-            <button onClick={scrollToTop} id="back-to-top" className="back-to-top">
-                <i className="bi bi-arrow-up"></i>
-            </button>
-        )}
-      </div>
-
-      {/* Hero Video */}
-      <section className="hero-video">
-        <div className="video-container">
-          <div className="video-slide">
-            <video src="/msc/assets/video/Intro.mp4" autoPlay muted loop playsInline preload="auto"></video>
-          </div>
-        </div>
-      </section>
-
-      {/* Các dự án */}
-      <section id="du-an">
-        <div className="du-an-container">
-            <h2 className="du-an-title">DỰ ÁN ĐÃ TRIỂN KHAI CỦA MSC</h2>
-            <h2 className="typewriter-text" style={{ textAlign: 'center', fontSize: '16px', color: '#555', marginBottom: '40px', lineHeight: 1.6 }}>
-              MSC là trung tâm Mentoring kết hợp Coaching đầu tiên ở Việt Nam.<br />Giúp cho học viên và các dự án phát triển chuyên nghiệp và bền vững
+          {/* Main Content */}
+          <motion.div variants={itemVariants} className="mb-12">
+            <h2 className="text-2xl md:text-4xl text-gray-700 mb-6 max-w-4xl mx-auto leading-relaxed">
+              {language === "vi" ? (
+                <>
+                  Trung tâm{" "}
+                  <span className="text-gradient font-semibold">
+                    Mentoring kết hợp Coaching
+                  </span>{" "}
+                  đầu tiên tại Việt Nam
+                </>
+              ) : (
+                <>
+                  The first{" "}
+                  <span className="text-gradient font-semibold">
+                    Mentoring & Coaching
+                  </span>{" "}
+                  center in Vietnam
+                </>
+              )}
             </h2>
-            <div className="du-an-grid">
-                {/* Card Dự án - Ví dụ 1 */}
-                <div className="du-an-card">
-                    <Image src="/msc/assets/project/SCVH.webp" alt="Nông Trại Hải Vân" width={400} height={250} style={{width: '100%', height: 'auto'}} />
-                    <h3>Dự án: Nông Trại Hải Vân- Sân Chim Vàm Hồ </h3>
-                    <p><strong>👉Mentoring & Coaching:</strong> Đào tạo đội ngũ Sales & Marketing</p>
-                    <p><strong>👉Ban Giảng Huấn:</strong> Phan Huỳnh Anh <br />& Trần Lê Bảo Châu</p>
-                    <a href="#" className="btn">Chi tiết </a>
+            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+              {language === "vi"
+                ? "Giúp học viên và dự án phát triển bền vững thông qua phương pháp đào tạo hiện đại"
+                : "Helping students and projects develop sustainably through modern training methods"}
+            </p>
+          </motion.div>
+
+          {/* CTA Buttons */}
+          <motion.div
+            variants={itemVariants}
+            className="flex flex-col sm:flex-row gap-4 justify-center mb-16"
+          >
+            <Link href="/about">
+              <Button
+                variant="gradient"
+                size="xl"
+                className="w-full sm:w-auto group"
+                animation="bounce"
+                leftIcon={<PlayCircle size={20} />}
+                rightIcon={
+                  <ArrowRight
+                    size={20}
+                    className="group-hover:translate-x-1 transition-transform duration-300"
+                  />
+                }
+              >
+                {language === "vi" ? "Khám phá MSC" : "Explore MSC"}
+              </Button>
+            </Link>
+            <Link href="/training">
+              <Button
+                variant="outline"
+                size="xl"
+                className="w-full sm:w-auto bg-white/20 hover:bg-white/30 border-white/30 backdrop-blur-sm group"
+                animation="bounce"
+                leftIcon={<BookOpen size={20} />}
+                rightIcon={
+                  <ArrowRight
+                    size={20}
+                    className="group-hover:translate-x-1 transition-transform duration-300"
+                  />
+                }
+              >
+                {language === "vi" ? "Xem khóa học" : "View Courses"}
+              </Button>
+            </Link>
+          </motion.div>
+
+          {/* Quick Stats */}
+          <motion.div
+            variants={itemVariants}
+            className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto"
+          >
+            {stats.map((stat, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, delay: 1.5 + index * 0.1 }}
+                className="text-center p-4 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20"
+              >
+                <div className="flex items-center justify-center mb-2 text-blue-600">
+                  {stat.icon}
                 </div>
-                 {/* ... Các card dự án khác tương tự, thay img bằng Image */}
+                <div className="text-2xl font-bold text-gray-900">
+                  {stat.number}
+                </div>
+                <div className="text-sm text-gray-600">{stat.label}</div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </motion.div>
+
+        {/* Scroll Indicator */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2.5 }}
+          className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+        >
+          <motion.div
+            animate={{ y: [0, 10, 0] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            className="flex flex-col items-center space-y-2"
+          >
+            <span className="text-sm text-gray-500">
+              {language === "vi" ? "Cuộn xuống" : "Scroll down"}
+            </span>
+            <div className="w-6 h-10 border-2 border-gray-300 rounded-full flex justify-center">
+              <motion.div
+                animate={{ y: [0, 12, 0] }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                className="w-1 h-3 bg-gray-400 rounded-full mt-2"
+              />
             </div>
-            <div className="du-an-button">
-              <Link href="/trang-con/du-an" className="btn btn-outline">Các dự án khác</Link>
-            </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </section>
 
-      {/* Ban giảng huấn */}
-      <section className="mentor-section">
-        <h2 className="mentor-title">BAN GIẢNG HUẤN</h2>
-        <div id="tab-description" className="subtext">
-          Đội ngũ trực tiếp tư vấn, thiết kế và huấn luyện cho các chương trình đào tạo và dự án tại MSC
-        </div>
-        <div className="tab-content">
-            <div className="tab-panel" id="giang-huan" style={{ display: 'block' }}>
-                <div className="mentor-grid">
-                    {/* Mentor Card - Ví dụ 1 */}
-                    <div className="mentor-card">
-                        <Link href="/cv/pha/pha" title="Profile">
-                            <div className="mentor-image">
-                                <Image src="/msc/assets/members/PHAvuong.jpg" alt="Phan Huỳnh Anh" width={200} height={200} />
-                            </div>
-                        </Link>
-                        <div className="mentor-info">
-                            <h3>Phan Huỳnh Anh</h3>
-                            <p className="position highlight">Tiến Sĩ Kinh tế</p>
-                            <div className="contact-info">
-                                <p>Chủ tịch HĐQT Công ty Smentor</p>
-                            </div>
-                        </div>
-                    </div>
-                     {/* ... Các card mentor khác tương tự */}
-                </div>
-            </div>
-        </div>
-      </section>
-      
-      {/* Ban Chủ Nhiệm */}
-      <section className="chu-nhiem">
-        <h2>BAN CHỦ NHIỆM</h2>
-        <p className="subtext">
-            Là đội ngũ nòng cốt chịu trách nhiệm vận hành và phát triển Trung tâm MSC.<br />
-            Ban Chủ Nhiệm đóng vai trò điều phối toàn diện các dự án, kết nối<br />
-            nguồn lực và đảm bảo MSC hoạt động hiệu quả, đúng định hướng.
-        </p>
-        <div className="chu-nhiem-grid">
-            {/* Item Ban Chủ Nhiệm - Ví dụ 1 */}
-            <div className="chu-nhiem-item">
-                <Link href="/cv/dtk/dtk" title="Profile">
-                    <Image src="/msc/assets/members/DTK.webp" alt="Dương Thế Khải" width={150} height={150} />
-                    <h4>Dương Thế Khải</h4>
-                    <p>Phó Giám Đốc MSC Center</p>
+      {/* Navigation Cards Section */}
+      <section className="py-20 px-4">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold text-gradient mb-6">
+              {language === "vi" ? "Khám phá MSC" : "Explore MSC"}
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              {language === "vi"
+                ? "Tìm hiểu về các dịch vụ và chương trình đào tạo của chúng tôi"
+                : "Learn about our services and training programs"}
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {navigationCards.map((card, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: card.delay }}
+                viewport={{ once: true }}
+              >
+                <Link href={card.href}>
+                  <Card
+                    className="h-full group cursor-pointer border-white/30 backdrop-blur-xl bg-white/20"
+                    hover="lift"
+                  >
+                    <CardHeader className="text-center">
+                      <div
+                        className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-r ${card.color} mb-4 mx-auto text-white shadow-lg group-hover:scale-110 transition-transform duration-300`}
+                      >
+                        {card.icon}
+                      </div>
+                      <CardTitle className="text-xl group-hover:text-blue-600 transition-colors">
+                        {card.title}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <CardDescription className="text-center text-gray-600 mb-4">
+                        {card.description}
+                      </CardDescription>
+                      <div className="flex items-center justify-center text-blue-600 group-hover:gap-3 transition-all duration-300">
+                        <span className="text-sm font-medium">
+                          {language === "vi" ? "Tìm hiểu thêm" : "Learn more"}
+                        </span>
+                        <ArrowRight
+                          size={16}
+                          className="group-hover:translate-x-1 transition-transform duration-300"
+                        />
+                      </div>
+                    </CardContent>
+                  </Card>
                 </Link>
-            </div>
-            {/* ... Các item khác tương tự */}
-        </div>
-      </section>
-
-      {/* MSCers Member Carousel */}
-      <div className="msc-container">
-        <h2>MSCers Member</h2>
-        <p className="subtext">Những học viên xuất sắc và trưởng thành từ MSC</p>
-        <button className="msc-nav msc-prev" onClick={() => scrollMscCarousel('prev')}>
-            <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-        </button>
-        <div className="msc-wrapper" ref={mscWrapperRef}>
-            {/* Item MSCer - Ví dụ 1 */}
-            <div className="msc-item">
-                <div className="msc-image">
-                    <Image src="/msc/assets/members/DTK.webp" alt="Dương Thế Khải" width={180} height={180} />
-                </div>
-                <div className="msc-title">Dương Thế Khải</div>
-            </div>
-            {/* ... Các item MSCer khác tương tự */}
-        </div>
-        <button className="msc-nav msc-next" onClick={() => scrollMscCarousel('next')}>
-            <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-        </button>
-      </div>
-
-      {/* Chia sẻ */}
-      <section className="news-section">
-        <div className="news-header">
-            <h2 className="news-title-center">CHIA SẺ</h2>
-            <div className="news-tabs">
-                <button className={`tab ${activeNewsTab === 'share' ? 'active' : ''}`} onClick={() => setActiveNewsTab('share')}>Chia sẻ</button>
-                <button className={`tab ${activeNewsTab === 'hotnews' ? 'active' : ''}`} onClick={() => setActiveNewsTab('hotnews')}>Tin tức nổi bật</button>
-            </div>
-        </div>
-        <div className="news-tabs-content">
-            <div className={`tab-pane ${activeNewsTab === 'share' ? 'active' : ''}`}>
-                <div className="news-list">
-                    {/* News Item - Ví dụ 1 */}
-                    <div className="news-item">
-                        <Image src="/msc/assets/thumbnail/kaizen.webp" alt="Kaizen" width={300} height={180} style={{width: '100%', height: 'auto'}}/>
-                        <h3>Muốn phát triển liên tục - Phải có Kaizen!</h3>
-                        <p>Kaizen là triết lý cải tiến liên tục, giúp doanh nghiệp luôn đổi mới và nâng cao chất lượng.</p>
-                    </div>
-                     {/* ... Các news item khác tương tự */}
-                </div>
-            </div>
-            <div className={`tab-pane ${activeNewsTab === 'hotnews' ? 'active' : ''}`}>
-                <div className="news-list">
-                    {/* Nội dung cho tab tin tức nổi bật */}
-                </div>
-            </div>
-        </div>
-      </section>
-
-      {/* Đối tác đồng hành */}
-      <section className="carousel-section">
-        <div className="container-title">
-            <div className="section-title"><h2>ĐỐI TÁC ĐỒNG HÀNH</h2></div>
-        </div>
-        <div className="carousel-container">
-            <div className="carousel-track">
-                {/* Lặp lại 2 lần để tạo hiệu ứng vô tận */}
-                {[...Array(2)].map((_, i) => (
-                    <React.Fragment key={i}>
-                        <Image src="/msc/assets/carousel/ASL.webp" alt="ASL" height={60} width={120} />
-                        <Image src="/msc/assets/carousel/Binemo.webp" alt="Binemo" height={60} width={120} />
-                        <Image src="/msc/assets/carousel/BNI.webp" alt="BNI" height={60} width={120} />
-                        <Image src="/msc/assets/carousel/CP.webp" alt="CP" height={60} width={120} />
-                        <Image src="/msc/assets/carousel/CSMO.webp" alt="CSMO" height={60} width={120} />
-                        <Image src="/msc/assets/carousel/Greenfeed.webp" alt="Greenfeed" height={60} width={120} />
-                        <Image src="/msc/assets/carousel/Happyland.webp" alt="Happyland" height={60} width={120} />
-                        <Image src="/msc/assets/carousel/HTOGroup.webp" alt="HTOGroup" height={60} width={120} />
-                    </React.Fragment>
-                ))}
-            </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="footer">
-        {/* ... Nội dung footer giữ nguyên, chỉ cần thay <img> bằng <Image> */}
+      <footer className="py-12 px-4 border-t border-white/20 bg-gradient-to-r from-gray-50 to-blue-50">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="mb-6 md:mb-0 text-center md:text-left">
+              <h3 className="text-2xl font-bold text-gradient mb-2">
+                MSC Center
+              </h3>
+              <p className="text-gray-600">
+                {language === "vi"
+                  ? "Trung tâm Mentoring kết hợp Coaching đầu tiên tại Việt Nam"
+                  : "The first Mentoring & Coaching center in Vietnam"}
+              </p>
+            </div>
+
+            <div className="flex items-center space-x-4">
+              <Button variant="ghost" size="icon">
+                <Github size={20} />
+              </Button>
+              <Button variant="ghost" size="icon">
+                <Twitter size={20} />
+              </Button>
+              <Button variant="ghost" size="icon">
+                <Instagram size={20} />
+              </Button>
+            </div>
+          </div>
+
+          <div className="mt-8 pt-8 border-t border-white/20 text-center">
+            <p className="text-gray-500">
+              © 2025 MSC Center.{" "}
+              {language === "vi"
+                ? "Bản quyền thuộc về MSC"
+                : "All rights reserved"}
+            </p>
+          </div>
+        </div>
       </footer>
 
-      {/* Scripts */}
-      <div id="fb-root"></div>
-      <Script async defer crossOrigin="anonymous" src="https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v22.0" nonce="abc123" strategy="lazyOnload" />
-      <Script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX" strategy="afterInteractive" />
-      <Script id="google-analytics" strategy="afterInteractive">
-        {`
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-XXXXXXX');
-        `}
-      </Script>
-      <Script id="version-checker" strategy="lazyOnload">
-        {`
-            let currentVersion = null;
-            async function checkVersion() {
-                try {
-                    const response = await fetch('/version.json?_=' + Date.now());
-                    const data = await response.json();
-                    if (currentVersion && data.version !== currentVersion) {
-                        console.log("New version detected. Reloading...");
-                        location.reload(true);
-                    }
-                    currentVersion = data.version;
-                } catch (error) {
-                    console.error("Không thể kiểm tra phiên bản:", error);
-                }
-            }
-            setInterval(checkVersion, 10000);
-            checkVersion();
-        `}
-      </Script>
-    </>
+      {/* Floating Chat */}
+      <FloatingChat language={language} />
+    </div>
   );
 }
