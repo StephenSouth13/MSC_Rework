@@ -1,0 +1,627 @@
+/* === HOME.MODULE.CSS === */
+/* Thiết kế cho Viện Đào tạo MSC */
+
+/* --- 1. BIẾN TOÀN CỤC (DESIGN TOKENS) --- */
+:root {
+  /* Bảng màu */
+  --color-primary: #005A9C; /* Xanh Navy đậm - Tin cậy, chuyên nghiệp */
+  --color-secondary: #0D99FF; /* Xanh da trời sáng hơn */
+  --color-accent: #F5A623; /* Vàng cam - Năng động, nổi bật */
+  --color-text-dark: #212529; /* Đen gần - Dễ đọc */
+  --color-text-light: #495057; /* Xám đậm cho subtext */
+  --color-text-on-dark: #FFFFFF;
+  --color-background: #FFFFFF;
+  --color-background-alt: #f8f9fa; /* Xám rất nhạt để phân tách section */
+  --color-border: #dee2e6;
+
+  /* Typography */
+  --font-primary: 'Montserrat', sans-serif;
+  --font-headings: 'Roboto Slab', serif;
+  --font-body: 'Open Sans', sans-serif;
+  
+  /* Spacing */
+  --spacing-xs: 0.5rem;   /* 8px */
+  --spacing-sm: 1rem;     /* 16px */
+  --spacing-md: 1.5rem;   /* 24px */
+  --spacing-lg: 2.5rem;   /* 40px */
+  --spacing-xl: 4rem;     /* 64px */
+
+  /* Other */
+  --border-radius: 8px;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.07);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --transition-fast: 0.2s ease;
+  --transition-smooth: 0.3s ease-in-out;
+}
+
+/* --- 2. GLOBAL & UTILITIES --- */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--spacing-md);
+  padding-right: var(--spacing-md);
+}
+
+.sectionTitle {
+  text-align: center;
+  margin-bottom: var(--spacing-lg);
+  font-family: var(--font-headings);
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.subtext {
+  text-align: center;
+  font-size: 1.1rem;
+  color: var(--color-text-light);
+  max-width: 700px;
+  margin: 0 auto var(--spacing-lg) auto;
+  line-height: 1.7;
+}
+
+/* --- 3. TOPBAR & HEADER --- */
+.topbar {
+  background-color: var(--color-background-alt);
+  padding: var(--spacing-xs) var(--spacing-lg);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.topbarRight {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.topbarLeft {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.langBtn img {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform var(--transition-fast);
+}
+
+.langBtn:hover img {
+  transform: scale(1.1);
+}
+
+.profileBtn {
+  font-family: var(--font-primary);
+  background-color: transparent;
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: all var(--transition-smooth);
+  font-weight: 500;
+}
+
+.profileBtn:hover {
+  background-color: var(--color-primary);
+  color: var(--color-text-on-dark);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  transition: box-shadow var(--transition-smooth);
+}
+
+.header.scrolled {
+  box-shadow: var(--shadow-md);
+}
+
+.logo img {
+  height: 50px;
+  width: auto;
+}
+
+.navMenu {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: var(--spacing-md);
+}
+
+.navMenu a {
+  text-decoration: none;
+  color: var(--color-text-dark);
+  font-family: var(--font-primary);
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: var(--spacing-xs) 0;
+  position: relative;
+  transition: color var(--transition-smooth);
+}
+
+.navMenu a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--color-accent);
+  transition: width var(--transition-smooth);
+}
+
+.navMenu a:hover {
+  color: var(--color-primary);
+}
+
+.navMenu a:hover::after {
+  width: 100%;
+}
+
+/* --- 4. HERO SECTION --- */
+.heroVideo {
+  position: relative;
+  width: 100%;
+  height: 85vh; /* Chiều cao màn hình */
+  overflow: hidden;
+  margin-top: -95px; /* Kéo video lên sau header */
+  z-index: 1;
+}
+
+.heroVideo video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.heroVideo::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3); /* Lớp phủ mờ */
+}
+
+/* --- 5. DỰ ÁN SECTION --- */
+.duAnSection {
+  padding: var(--spacing-xl) 0;
+  background-color: var(--color-background-alt);
+}
+
+.duAnGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.duAnCard {
+  background-color: var(--color-background);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--transition-smooth), box-shadow var(--transition-smooth);
+}
+
+.duAnCard:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-md);
+}
+
+.duAnCard img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+}
+
+.duAnCard h3 {
+  font-family: var(--font-headings);
+  font-size: 1.25rem;
+  color: var(--color-primary);
+  margin: var(--spacing-sm) var(--spacing-md) var(--spacing-xs);
+}
+
+.duAnCard p {
+  color: var(--color-text-light);
+  margin: 0 var(--spacing-md) var(--spacing-xs);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  flex-grow: 1; /* Đẩy button xuống dưới */
+}
+
+.duAnCard .btn {
+  display: inline-block;
+  margin: var(--spacing-sm) var(--spacing-md) var(--spacing-md);
+  text-decoration: none;
+  font-weight: 600;
+  color: var(--color-accent);
+  align-self: flex-start;
+  transition: color var(--transition-smooth);
+}
+
+.duAnCard .btn:hover {
+    color: #c48217;
+}
+
+.duAnButton {
+  text-align: center;
+  margin-top: var(--spacing-lg);
+}
+
+.btnOutline {
+    border: 2px solid var(--color-primary);
+    color: var(--color-primary);
+    padding: 0.75rem 2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all var(--transition-smooth);
+}
+
+.btnOutline:hover {
+    background-color: var(--color-primary);
+    color: var(--color-text-on-dark);
+}
+
+/* --- 6. MENTOR & BAN CHỦ NHIỆM --- */
+.mentorSection, .chuNhiemSection {
+  padding: var(--spacing-xl) 0;
+}
+
+.mentorGrid, .chuNhiemGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-lg);
+  justify-content: center;
+}
+
+.mentorCard {
+  text-align: center;
+}
+
+.mentorImage {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin: 0 auto var(--spacing-md);
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  transition: transform var(--transition-smooth);
+}
+
+.mentorCard:hover .mentorImage {
+  transform: scale(1.05);
+}
+
+.mentorImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mentorInfo h3 {
+  font-family: var(--font-headings);
+  font-size: 1.3rem;
+  color: var(--color-text-dark);
+  margin-bottom: var(--spacing-xs);
+}
+
+.mentorInfo .position.highlight {
+  font-family: var(--font-primary);
+  font-weight: 600;
+  color: var(--color-accent);
+  font-size: 1rem;
+}
+
+.mentorInfo .contactInfo p {
+  color: var(--color-text-light);
+  font-size: 0.9rem;
+  margin-top: var(--spacing-xs);
+}
+
+.chuNhiemItem a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    text-align: center;
+    transition: transform var(--transition-smooth);
+}
+
+.chuNhiemItem:hover a {
+    transform: translateY(-5px);
+}
+
+.chuNhiemItem img {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: var(--spacing-sm);
+    box-shadow: var(--shadow-md);
+}
+
+.chuNhiemItem h4 {
+    font-family: var(--font-headings);
+    font-size: 1.2rem;
+    color: var(--color-primary);
+    margin-bottom: 5px;
+}
+
+.chuNhiemItem p {
+    color: var(--color-text-light);
+    font-size: 0.9rem;
+}
+
+/* --- 7. MSCers CAROUSEL --- */
+.mscContainer {
+    padding: var(--spacing-xl) 0;
+    background: var(--color-background-alt);
+    position: relative;
+}
+
+.mscWrapper {
+    display: flex;
+    gap: var(--spacing-md);
+    overflow-x: auto;
+    padding-bottom: var(--spacing-md); /* Chừa không gian cho thanh cuộn (nếu có) */
+    scroll-snap-type: x mandatory;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.mscWrapper::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+.mscItem {
+    flex: 0 0 200px; /* Không co, không giãn, rộng 200px */
+    text-align: center;
+    scroll-snap-align: center;
+}
+
+.mscImage {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-smooth);
+}
+.mscImage img {
+    width: 100%; height: 100%; object-fit: cover;
+}
+
+.mscItem:hover .mscImage {
+    box-shadow: var(--shadow-lg);
+    transform: scale(1.05);
+}
+
+.mscTitle {
+    margin-top: var(--spacing-sm);
+    font-family: var(--font-primary);
+    font-weight: 600;
+    color: var(--color-text-dark);
+}
+
+.mscNav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    z-index: 10;
+    transition: all var(--transition-smooth);
+}
+
+.mscNav:hover {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+.mscPrev {
+    left: calc(var(--spacing-lg) / 2);
+}
+
+.mscNext {
+    right: calc(var(--spacing-lg) / 2);
+}
+
+/* --- 8. NEWS SECTION --- */
+.newsSection {
+    padding: var(--spacing-xl) 0;
+}
+
+.newsHeader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+}
+
+.newsTabs {
+    display: flex;
+    gap: var(--spacing-sm);
+    background-color: var(--color-background-alt);
+    padding: var(--spacing-xs);
+    border-radius: 50px;
+    margin-top: var(--spacing-md);
+}
+
+.tab {
+    padding: 0.7rem 1.5rem;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-family: var(--font-primary);
+    font-weight: 600;
+    color: var(--color-text-light);
+    border-radius: 50px;
+    transition: all var(--transition-smooth);
+}
+
+.tab.active {
+    background-color: var(--color-primary);
+    color: var(--color-text-on-dark);
+    box-shadow: var(--shadow-sm);
+}
+
+.newsList {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-md);
+}
+
+/* Sử dụng lại style của duAnCard cho newsItem để đồng bộ */
+.newsItem {
+    composes: duAnCard;
+}
+
+/* --- 9. PARTNER CAROUSEL --- */
+.carouselSection {
+    padding: var(--spacing-xl) 0;
+    background-color: var(--color-background);
+}
+
+.carouselContainer {
+    overflow: hidden;
+    position: relative;
+    -webkit-mask-image: linear-gradient(to right, transparent, black 20%, black 80%, transparent);
+    mask-image: linear-gradient(to right, transparent, black 20%, black 80%, transparent);
+}
+
+.carouselTrack {
+    display: flex;
+    width: calc(250px * 16); /* 8 logo * 2 * width */
+    animation: scroll 40s linear infinite;
+}
+
+.carouselTrack img {
+    height: 60px;
+    width: auto;
+    margin: 0 40px;
+    filter: grayscale(100%);
+    opacity: 0.7;
+    transition: all var(--transition-smooth);
+}
+
+.carouselTrack:hover {
+    animation-play-state: paused;
+}
+
+.carouselTrack img:hover {
+    filter: grayscale(0%);
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+@keyframes scroll {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(calc(-250px * 8)); /* 8 logo * width */
+    }
+}
+
+
+/* --- 10. FOOTER --- */
+.footer {
+    background-color: #1a253c; /* Màu nền tối cho footer */
+    color: #a9b3c9;
+    padding: var(--spacing-xl) 0;
+    font-family: var(--font-body);
+}
+
+.footerContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.footerCol h4 {
+    font-family: var(--font-headings);
+    color: var(--color-text-on-dark);
+    margin-bottom: var(--spacing-md);
+    font-size: 1.2rem;
+}
+
+/* ... các style footer khác ... */
+
+/* --- 11. RESPONSIVE DESIGN --- */
+@media (max-width: 1024px) {
+    .navMenu {
+        display: none; /* Ẩn menu desktop trên tablet */
+    }
+
+    .mobileNavToggle {
+        display: block; /* Hiện hamburger icon */
+    }
+}
+
+@media (max-width: 768px) {
+    :root {
+      /* Giảm font size cho mobile */
+      --spacing-xl: 3rem;
+    }
+    .sectionTitle {
+        font-size: 2rem;
+    }
+
+    .heroVideo {
+        height: 60vh;
+        margin-top: -80px;
+    }
+
+    .duAnGrid, .mentorGrid, .chuNhiemGrid, .newsList {
+        grid-template-columns: 1fr; /* 1 cột trên mobile */
+    }
+
+    .mscNav {
+        display: none; /* Ẩn nút điều hướng trên mobile, cho phép vuốt */
+    }
+}
+
+@media (max-width: 480px) {
+    .topbar {
+        display: none; /* Ẩn topbar trên màn hình quá nhỏ */
+    }
+    .header {
+        padding: var(--spacing-sm);
+    }
+    .heroVideo {
+        margin-top: -70px;
+    }
+    .tab {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+}
